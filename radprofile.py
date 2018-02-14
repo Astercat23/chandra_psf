@@ -8,7 +8,7 @@ import errors as err
 #----------------------------------------------
 ## The Profile object
 
-class Profile(object):
+class RadProfile(object):
     def __init__(self, from_fits_file=None, key='SUR_BRI'):
         self.rleft  = 0.0
         self.rright = 0.0
@@ -41,7 +41,7 @@ class Profile(object):
         return np.pi * (self.rright**2 - self.rleft**2) # pix^2
 
     def __getslice__(self, i,j):
-        result = Profile()
+        result = RadProfile()
         result.rleft  = self.rleft[i:j]
         result.rright = self.rright[i:j]
         result.surbri = self.surbri[i:j]
@@ -49,7 +49,7 @@ class Profile(object):
         return result
 
     def __getitem__(self, ivals):
-        result = Profile()
+        result = RadProfile()
         result.rleft  = self.rleft[ivals]
         result.rright = self.rright[ivals]
         result.surbri = self.surbri[ivals]
@@ -104,7 +104,7 @@ class Profile(object):
 ## Useful functions
 
 def copy_profile(profile):
-	result = Profile()
+	result = RadProfile()
 	result.rleft  = np.array( profile.rleft )
 	result.rright = np.array( profile.rright )
 	result.surbri = np.array( profile.surbri )
@@ -112,7 +112,7 @@ def copy_profile(profile):
 	return result
 
 def get_profile(filename):
-    result = Profile()
+    result = RadProfile()
     data   = ascii.read( filename )
     keys   = data.keys()
     result.rleft  = data[keys[0]]
@@ -122,8 +122,8 @@ def get_profile(filename):
     return result
 
 
-def add_profile(profile1, profile2=Profile(), weight1=1.0, weight2=1.0):
-    result = Profile()
+def add_profile(profile1, profile2=RadProfile(), weight1=1.0, weight2=1.0):
+    result = RadProfile()
 #    if profile1.rleft != profile2.rleft or profile1.rright != profile2.rright:
 #        print 'Error: Profile bins need to match up'
 #        return
@@ -134,7 +134,7 @@ def add_profile(profile1, profile2=Profile(), weight1=1.0, weight2=1.0):
     return result
 
 def make_bkg_profile(template, bkg_value, bkg_err=0.0):
-    result = Profile()
+    result = RadProfile()
     result.rleft  = template.rleft
     result.rright = template.rright
     result.surbri = np.zeros( len(template.rleft) ) + bkg_value
@@ -155,7 +155,7 @@ def add_bkg(profile, bkg_counts, bkg_area):
     return
 
 def residual_profile( profile, model ):
-    result = Profile()
+    result = RadProfile()
     result.rleft  = np.array(profile.rleft)
     result.rright = np.array(profile.rright)
     result.surbri = profile.surbri - model.surbri
